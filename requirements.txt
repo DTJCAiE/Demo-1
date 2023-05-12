@@ -1,0 +1,11 @@
+pandas
+numpy
+patsy
+linearmodels
+statsmodels
+scipy
+matplotlib
+path
+openpyxl
+display
+scikit-learn
