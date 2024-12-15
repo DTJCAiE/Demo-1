@@ -9,6 +9,35 @@ COPY requirements.txt /tmp/pip-tmp/
 RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
     && rm -rf /tmp/pip-tmp
 
+# Install Julia 1.6.7
+ENV JULIA_VERSION=1.6.7
+RUN apt-get update && \
+    apt-get install -y wget curl git build-essential && \
+    wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz && \
+    tar -xvzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz && \
+    mv julia-${JULIA_VERSION} /opt/julia && \
+    ln -s /opt/julia/bin/julia /usr/local/bin/julia && \
+    rm julia-${JULIA_VERSION}-linux-x86_64.tar.gz && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the current directory contents into the container
+COPY . /app
+
+# Install Julia dependencies
+RUN julia -e 'include("dependencies.jl")'
+
+# Install JupyterLab extensions for Julia integration
+RUN julia -e 'using Pkg; Pkg.add("IJulia")'
+
+# Expose port 8888 for JupyterLab
+EXPOSE 8888
+
+# Set the default command to start JupyterLab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update \
 #     && export DEBIAN_FRONTEND=noninteractive \
