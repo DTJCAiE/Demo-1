@@ -27,6 +27,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Julia dependencies
+COPY dependencies.jl /app/dependencies.jl
 RUN julia -e 'include("dependencies.jl")'
 
 # Install JupyterLab extensions for Julia integration
