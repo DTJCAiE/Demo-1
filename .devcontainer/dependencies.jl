@@ -1,5 +1,7 @@
 using Pkg
+Pkg.activate(".")
 
+# List of dependencies
 dependencies = [
     PackageSpec(name="IJulia", version="1.24.2"),
     PackageSpec(name="Compat", version="4.6.1"),
@@ -15,4 +17,6 @@ dependencies = [
     PackageSpec(name="LaTeXStrings", version="1.3.0")
 ]
 
+# Install and precompile dependencies
 Pkg.add(dependencies)
+Pkg.precompile()
