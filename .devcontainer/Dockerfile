@@ -30,8 +30,14 @@ COPY . /app
 COPY .devcontainer/dependencies.jl /app/dependencies.jl
 RUN julia -e 'include("dependencies.jl")'
 
-# Install IJulia and Jupyter Kernel
-RUN julia -e "using Pkg; Pkg.activate(\".\"); Pkg.add(\"IJulia\"); using IJulia; IJulia.installkernel(\"Julia 1.6.7\")"
+# Install IJulia and Jupyter Kernel with Correct Path
+RUN julia -e "using Pkg; Pkg.add(\"IJulia\"); using IJulia; IJulia.installkernel(\"Julia 1.6.7\")" && \
+    echo '{ \
+        \"argv\": [\"/usr/local/bin/julia\", \"-i\", \"--startup-file=yes\", \"--color=yes\", \"-e\", \"using IJulia; IJulia.start_kernel()\"], \
+        \"display_name\": \"Julia 1.6.7\", \
+        \"language\": \"julia\" \
+    }' > ~/.local/share/jupyter/kernels/julia-1.6/kernel.json
+
 
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
