@@ -30,8 +30,8 @@ COPY . /app
 COPY .devcontainer/dependencies.jl /app/dependencies.jl
 RUN julia -e 'include("dependencies.jl")'
 
-# Install JupyterLab extensions for Julia integration
-RUN julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; IJulia.installkernel("Julia")'
+# Install IJulia and Jupyter Kernel
+RUN julia -e "using Pkg; Pkg.activate(\".\"); Pkg.add(\"IJulia\"); using IJulia; IJulia.installkernel(\"Julia 1.6.7\")"
 
 # Expose port 8888 for JupyterLab
 EXPOSE 8888
